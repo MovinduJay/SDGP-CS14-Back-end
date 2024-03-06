@@ -59,10 +59,10 @@ import datetime
 import torch
 from flask import Flask, request, redirect, jsonify
 import base64
-from flask_cors import CORS  # Import CORS
+# from flask_cors import CORS  # Import CORS
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+# CORS(app)  # Enable CORS for all routes
 
 DATETIME_FORMAT = "%Y-%m-%d_%H-%M-%S-%f"
 
