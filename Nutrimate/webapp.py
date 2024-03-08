@@ -60,8 +60,6 @@ import torch
 from flask import Flask, request, redirect, jsonify
 import base64
 from flask_cors import CORS  # Import CORS
-import sys
-
 
 
 app = Flask(__name__)
@@ -69,10 +67,7 @@ CORS(app)  # Enable CORS for all routes
 
 DATETIME_FORMAT = "%Y-%m-%d_%H-%M-%S-%f"
 
-# pathlib.PosixPath = pathlib.WindowsPath
-
-if sys.platform != 'win32':
-    pathlib.PosixPath = pathlib.PosixPath
+pathlib.PosixPath = pathlib.WindowsPath
 
 model = torch.hub.load('ultralytics/yolov5', 'custom', path='best.pt')
 model.eval()
@@ -113,14 +108,13 @@ def predict():
         # Delete the image file after prediction
         os.remove(image_path)
 
-        return jsonify({'detected_object': identified_object})
-
+        return jsonify({'detected_object': identified_object, 'is_identified': bool(identified_object)})
+    
     return jsonify({'error': 'Invalid request'})
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Flask app exposing yolov5 models")
-    parser.add_argument("--port", default=5000, type=int, help="port number")
-    args = parser.parse_args()
+# if __name__ == "__main__":
+#     parser = argparse.ArgumentParser(description="Flask app exposing yolov5 models")
+#     parser.add_argument("--port", default=5000, type=int, help="port number")
+#     args = parser.parse_args()
 
-    app.run(host="0.0.0.0", port=args.port)  # debug=True causes Restarting with stat
-
+#     app.run(host="0.0.0.0", port=args.port)  # debug=True causes Restarting with stat
