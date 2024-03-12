@@ -135,7 +135,7 @@ def predict():
 if __name__ == "__main__":
     # Parse command line arguments for the port number
     parser = argparse.ArgumentParser(description="Flask app exposing YOLOv5 models")
-    parser.add_argument("--port", default=5000, type=int, help="port number")
+    parser.add_argument("--port", default=8000, type=int, help="port number")
     args = parser.parse_args()
 
     # Start the Flask app with the specified host and port
