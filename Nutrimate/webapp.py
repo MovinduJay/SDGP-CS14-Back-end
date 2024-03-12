@@ -73,8 +73,10 @@ DATETIME_FORMAT = "%Y-%m-%d_%H-%M-%S-%f"
 # Adjust pathlib for Windows compatibility
 pathlib.PosixPath = pathlib.WindowsPath
 
-# Load the YOLOv5 model
+# Load the YOLOv5 model using Torch Hub
 model = torch.hub.load('ultralytics/yolov5', 'custom', path='best.pt')
+
+# Setting the Model to Evaluation Mode
 model.eval()
 
 # Route to handle saving received photos
@@ -120,7 +122,7 @@ def predict():
         # Render the results to update images with boxes and labels
         results.render()
 
-        # Get the identified object name from the predictions
+        # Get the identified object name from the predictions using the class names and coordinates
         identified_object = results.names[int(results.xyxy[0][0][-1])]
         print(f"Identified object: {identified_object}")
 
