@@ -12,14 +12,18 @@ router.get('/caloriemeter', async (req, res) => {
         // Retrieve data from "User-Data" collection
         const userData = await UserModel.find({});
 
-        // Merge data as needed
+            // Merge data as needed
         const mergedData = calData.map(calItem => {
-            const userItem = userData.find(user => user.uid === calItem.userId);
+            // Find the user data corresponding to the current calItem's userId
+            const userItem = userData.find(user => user.uid === calItem.uid);
+            
+            // Merge calItem with userItem
             return {
                 ...calItem.toObject(), // Convert Mongoose document to plain JavaScript object
                 userItem: userItem ? userItem.toObject() : null // Include user data if found, otherwise null
             };
         });
+
 
         res.json(mergedData);
     } catch (error) {
