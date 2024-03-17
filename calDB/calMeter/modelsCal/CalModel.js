@@ -1,9 +1,17 @@
-const mongoose = require('../configCal/DB');
+const mongoose = require('mongoose');
 
 const calSchema = new mongoose.Schema({
-  uid: String,
+  uid: {
+    type: String,
+    unique: true
+  },
+  scanned_items: [{
+    type: String
+  }],
+ 
   id: String,
   goal: String,
+  consumedCal: String,
   date: Date,
 });
 
