@@ -1,89 +1,93 @@
-const express = require('express');
-const router = express.Router();
-const Post = require('../models/Post');
+const router = require("express").Router();
+const User = require("../models/User");
+const Post = require("../models/Post");
 
-// Get all posts
-router.get('/', async (req, res) => {
+//CREATE POST
+router.post("/", async (req, res) => {
+  const newPost = new Post(req.body);
   try {
-    const posts = await Post.find();
-    res.json(posts);
+    const savedPost = await newPost.save();
+    res.status(200).json(savedPost);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json(err);
   }
 });
 
-// Get a specific post
-router.get('/:id', getPost, (req, res) => {
-  res.json(res.post);
-});
-
-// Create a new post
-router.post('/', async (req, res) => {
-  const post = new Post({
-    img: req.body.img,
-    title: req.body.title,
-    category: req.body.category,
-    date: req.body.date,
-    description: req.body.description,
-  });
-
+//UPDATE POST
+router.put("/:id", async (req, res) => {
   try {
-    const newPost = await post.save();
-    res.status(201).json(newPost);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-});
-
-// Update a post
-router.patch('/:id', getPost, async (req, res) => {
-  if (req.body.img != null) {
-    res.post.img = req.body.img;
-  }
-  if (req.body.title != null) {
-    res.post.title = req.body.title;
-  }
-  if (req.body.category != null) {
-    res.post.category = req.body.category;
-  }
-  if (req.body.date != null) {
-    res.post.date = req.body.date;
-  }
-  if (req.body.description != null) {
-    res.post.description = req.body.description;
-  }
-
-  try {
-    const updatedPost = await res.post.save();
-    res.json(updatedPost);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-});
-
-// Delete a post
-router.delete('/:id', getPost, async (req, res) => {
-  try {
-    await res.post.remove();
-    res.json({ message: 'Deleted post' });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-async function getPost(req, res, next) {
-  let post;
-  try {
-    post = await Post.findById(req.params.id);
-    if (post == null) {
-      return res.status(404).json({ message: 'Cannot find post' });
+    const post = await Post.findById(req.params.id);
+    if (post.username === req.body.username) {
+      try {
+        const updatedPost = await Post.findByIdAndUpdate(
+          req.params.id,
+          {
+            $set: req.body,
+          },
+          { new: true }
+        );
+        res.status(200).json(updatedPost);
+      } catch (err) {
+        res.status(500).json(err);
+      }
+    } else {
+      res.status(401).json("You can update only your post!");
     }
   } catch (err) {
-    return res.status(500).json({ message: err.message });
+    res.status(500).json(err);
   }
+});
 
-  res.post = post;
-  next();
-}
+//DELETE POST
+router.delete("/:id", async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (post.username === req.body.username) {
+      try {
+        await post.delete();
+        res.status(200).json("Post has been deleted...");
+      } catch (err) {
+        res.status(500).json(err);
+      }
+    } else {
+      res.status(401).json("You can delete only your post!");
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//GET POST
+router.get("/:id", async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    res.status(200).json(post);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//GET ALL POSTS
+router.get("/", async (req, res) => {
+  const username = req.query.user;
+  const catName = req.query.cat;
+  try {
+    let posts;
+    if (username) {
+      posts = await Post.find({ username });
+    } else if (catName) {
+      posts = await Post.find({
+        categories: {
+          $in: [catName],
+        },
+      });
+    } else {
+      posts = await Post.find();
+    }
+    res.status(200).json(posts);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 
 module.exports = router;
