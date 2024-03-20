@@ -49,7 +49,7 @@ const storage = multer.diskStorage({
   const upload = multer({ storage: storage });
   
   // Create a new post with image upload
-  router.post('/', upload.single('image'), async (req, res) => {
+  router.post('/', upload.single('img'), async (req, res) => {
     const post = new Post({
       img: req.file.path, // Store the file path or URL in the database
       title: req.body.title,
