@@ -3,6 +3,24 @@ const router = express.Router();
 const Post = require('../models/Post');
 const multer = require('multer');
 
+
+// Middleware to retrieve a post by ID
+async function getPost(req, res, next) {
+    try {
+      const postId = req.params.id;
+      const post = await Post.findById(postId);
+      console.log('Retrieved post:', post);
+      if (!post) {
+        return res.status(404).json({ message: 'Post not found' });
+      }
+      res.locals.post = post; // Store the retrieved post in res.locals
+      next();
+    } catch (err) {
+      return res.status(500).json({ message: err.message });
+    }
+  }
+
+
 // Get all posts
 router.get('/', async (req, res) => {
   try {
@@ -76,27 +94,19 @@ router.patch('/:id', getPost, async (req, res) => {
 
 // Delete a post
 router.delete('/:id', getPost, async (req, res) => {
-  try {
-    await res.post.remove();
-    res.json({ message: 'Deleted post' });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-async function getPost(req, res, next) {
-  let post;
-  try {
-    post = await Post.findById(req.params.id);
-    if (post == null) {
-      return res.status(404).json({ message: 'Cannot find post' });
+    try {
+      const deletedPost = await Post.findByIdAndDelete(req.params.id);
+      if (!deletedPost) {
+        return res.status(404).json({ message: 'Post not found' });
+      }
+      res.json({ message: 'Deleted post', deletedPost });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
     }
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
+  });
 
-  res.post = post;
-  next();
-}
+
+  
+  
 
 module.exports = router;
