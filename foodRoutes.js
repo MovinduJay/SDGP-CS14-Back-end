@@ -6,7 +6,20 @@ const FoodModel = require('./models/foodModel');
 const User = require("./models/userModel");
 const { generateRecommendation } = require('./models/generateRecommendation');
 
+router.get('/checkUser/:uid', async (req, res) => {
+  try {
+    const { uid } = req.params;
 
+    // Find the user with the given UID
+    const user = await User.findOne({ uid });
+
+    // Send a response indicating whether the user exists or not
+    res.json({ exists: !!user });
+  } catch (error) {
+    console.error('Error checking user existence:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 // get the  scanned items from databse
 // Endpoint to get scanned items for a specific user
