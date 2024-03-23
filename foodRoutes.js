@@ -7,6 +7,8 @@ const User = require("./models/userModel");
 const { generateRecommendation } = require('./models/generateRecommendation');
 
 
+// Test to see if it works
+
 
 // get the  scanned items from databse
 // Endpoint to get scanned items for a specific user
