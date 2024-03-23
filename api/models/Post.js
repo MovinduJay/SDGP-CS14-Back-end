@@ -18,12 +18,6 @@ const PostSchema = new mongoose.Schema({
         type:Array,
         required:false,
     },
-    //user_id: {
-    //    type: mongoose.Schema.Types.ObjectId,
-    //    ref: 'User-Data', // This should be the name of  User model
-    //    required: true
-    //}
-    
 },
 {timestamps:true}
 );
