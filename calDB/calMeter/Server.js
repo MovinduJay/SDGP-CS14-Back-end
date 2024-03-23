@@ -14,7 +14,7 @@ mongoose.connect('mongodb+srv://nutrimatecs14:nutrimatesdgp@nutrimate-db.cy528h9
 
 const db = mongoose.connection;
 // Importing the CalData model
-const CalData = require('./modelsCal/CalModel');
+/*const CalData = require('./modelsCal/CalModel');*/
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.once('open', () => {
@@ -27,7 +27,7 @@ app.use(express.json());
 app.use('/api', RoutesCal);
 
 // Route to delete data by ID
-app.delete('/api/caldata/:id', async (req, res) => {
+/*app.delete('/api/caldata/:id', async (req, res) => {
   try {
       await CalData.findByIdAndDelete(req.params.id);
       res.status(200).send('Data deleted successfully');
@@ -36,7 +36,7 @@ app.delete('/api/caldata/:id', async (req, res) => {
       res.status(500).send('Error deleting data');
   }
 });
-
+*/
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

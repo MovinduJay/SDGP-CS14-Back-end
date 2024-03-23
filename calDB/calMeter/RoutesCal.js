@@ -16,6 +16,21 @@ router.get('/caldata', async (req, res) => {
     }
   });
 
+
+// Route to delete data by ID
+router.delete('/caldata/:id', async (req, res) => {
+  try {
+     const result = await CalModel.findByIdAndDelete(req.params.id);
+     if (!result) {
+       return res.status(404).send('No data found with the provided ID');
+     }
+     res.status(200).send('Data deleted successfully');
+  } catch (error) {
+     console.error('Error deleting data:', error);
+     res.status(500).send('Error deleting data');
+  }
+ });
+ 
 // POST route to add new calData
 router.post('/caldata', async (req, res) => {
   try {
