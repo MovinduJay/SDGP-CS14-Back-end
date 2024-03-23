@@ -10,10 +10,6 @@ router.get('/checkUser/:uid', async (req, res) => {
   try {
     const { uid } = req.params;
 
-
-// Test to see if it works
-
-
     // Find the user with the given UID
     const user = await User.findOne({ uid });
 
