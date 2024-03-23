@@ -51,39 +51,36 @@ router.post("/", async (req, res) => {
 
 // Update a post
 router.patch('/:id', getPost, async (req, res) => {
-  if (req.body.img != null) {
-    res.post.img = req.body.img;
-  }
-  if (req.body.title != null) {
-    res.post.title = req.body.title;
-  }
-  if (req.body.category != null) {
-    res.post.category = req.body.category;
-  }
-  if (req.body.description != null) {
-    res.post.description = req.body.description;
-  }
-
   try {
-    const updatedPost = await res.post.save();
+    if (req.body.title) {
+      res.locals.post.title = req.body.title;
+    }
+    if (req.body.description) {
+      res.locals.post.description = req.body.description;
+    }
+
+    const updatedPost = await res.locals.post.save();
     res.json(updatedPost);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
 
+
+
 // Delete a post
-router.delete('/:id', getPost, async (req, res) => {
-    try {
-      const deletedPost = await Post.findByIdAndDelete(req.params.id);
+router.delete('/:id', async (req, res) => {
+  const postId = req.params.id;
+  try {
+      const deletedPost = await Post.findOneAndDelete({ _id: postId });
       if (!deletedPost) {
-        return res.status(404).json({ message: 'Post not found' });
+          return res.status(404).json({ message: 'Post not found' });
       }
       res.json({ message: 'Deleted post', deletedPost });
-    } catch (err) {
+  } catch (err) {
       res.status(500).json({ message: err.message });
-    }
-  });
+  }
+});
 
 
   
