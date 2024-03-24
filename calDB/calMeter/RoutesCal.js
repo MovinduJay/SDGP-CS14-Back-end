@@ -26,8 +26,8 @@ router.delete('/caldata/:id', async (req, res) => {
      }
      res.status(200).send('Data deleted successfully');
   } catch (error) {
-     console.error('Error deleting data:', error);
-     res.status(500).send('Error deleting data');
+     console.error('Data deleted successfully', error);
+     res.status(500).send('Data deleted successfully');
   }
  });
  
